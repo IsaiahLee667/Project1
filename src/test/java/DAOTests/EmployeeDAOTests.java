@@ -18,4 +18,11 @@ public class EmployeeDAOTests {
 
         Assertions.assertNotEquals(0,JohnCreated.getId());
     }
+
+    @Test
+    void findEmployeeById(){
+        Employee foundEmployee = employeeDAO.getEmployeeById(3);
+        System.out.println(foundEmployee.getFirstName());
+        Assertions.assertEquals(3,foundEmployee.getId());
+    }
 }

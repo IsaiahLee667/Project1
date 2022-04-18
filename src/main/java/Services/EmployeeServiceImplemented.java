@@ -14,4 +14,9 @@ public class EmployeeServiceImplemented implements EmployeeService{
     public Employee setupEmployee(Employee employee) {
         return this.employeeDAO.createEmployee(employee);
     }
+
+    @Override
+    public Employee searchEmployeeByID(int id) {
+        return this.employeeDAO.getEmployeeById(id);
+    }
 }

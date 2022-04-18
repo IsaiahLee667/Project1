@@ -5,6 +5,7 @@ import Entities.Employee;
 import Services.EmployeeService;
 import Services.EmployeeServiceImplemented;
 import com.google.gson.Gson;
+import exceptions.ResourceNotFound;
 import io.javalin.Javalin;
 
 public class WebApp {
@@ -15,7 +16,7 @@ public class WebApp {
 
     public static void main(String[] args) {
         Javalin app = Javalin.create();
-
+        //Create
         app.post("/createEmployee", context -> {
             String emp = context.body();
             //String EMP is the message we post from Postman
@@ -28,6 +29,23 @@ public class WebApp {
             //Return the result back to Postman (nothing should change except for the ID which goes from 0 to its serial value)
             context.result(employeeToJson);
         });
+
+        //Read
+        app.get("/findEmployee/{id}", context -> {
+            //id is equal to whatever number is put in the {id} search (i.e /findemployee/3 means id = 3
+            int id = Integer.parseInt(context.pathParam("id"));
+
+            try{
+                String jsonEmployee = gson.toJson(employeeService.searchEmployeeByID(id));
+                context.result(jsonEmployee);
+            } catch (ResourceNotFound e) {
+                context.status(404);
+                context.result("No employee could be found with id of " + id);
+            }
+
+        });
+
+
         app.start(8080);
     }
 }

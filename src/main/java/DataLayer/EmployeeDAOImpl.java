@@ -2,6 +2,8 @@ package DataLayer;
 
 import Entities.Employee;
 import Utilities.ConnectionUtil;
+import Utilities.List;
+import exceptions.ResourceNotFound;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.Connection;
@@ -35,16 +37,57 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     @Override
     public Employee getEmployeeById(int id) {
-        return null;
+        try{
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "select * from employee where employee_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1,id);
+
+            ResultSet rs = ps.executeQuery();
+            //If nothing is returned
+           /* if(rs.getFetchSize() == 0){
+                //Throw Error: Nothing was found
+                throw new ResourceNotFound(id);
+            }*/
+            rs.next();
+            Employee employee = new Employee();
+            employee.setId(rs.getInt("employee_id"));
+            employee.setFirstName(rs.getString("first_name"));
+            employee.setLastName(rs.getString("last_name"));
+            return employee;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+        try{
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public Employee updateEmployee(Employee employee) {
-        return null;
+        try{
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public Boolean deleteEmployeeById(int id) {
-        return null;
+        try{
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
