@@ -1,5 +1,9 @@
 package Entities;
 
+import lombok.Data;
+
+//Data auto creates our getters and setters
+@Data
 public class Expense {
     private int id;
     private double amount;
@@ -21,31 +25,5 @@ public class Expense {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public long getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(long purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public int getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
-    }
 }
