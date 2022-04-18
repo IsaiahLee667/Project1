@@ -3,6 +3,7 @@ package DAOTests;
 import DataLayer.EmployeeDAO;
 import DataLayer.EmployeeDAOImpl;
 import Entities.Employee;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,5 +25,13 @@ public class EmployeeDAOTests {
         Employee foundEmployee = employeeDAO.getEmployeeById(3);
         System.out.println(foundEmployee.getFirstName());
         Assertions.assertEquals(3,foundEmployee.getId());
+    }
+
+    @Test
+    void getAllEmployees(){
+        List<Employee> allEmployees = employeeDAO.getAllEmployees();
+        int numEmployees = allEmployees.size();
+        System.out.println(numEmployees);
+        Assertions.assertTrue(numEmployees > 2);
     }
 }

@@ -1,15 +1,17 @@
 package DataLayer;
 
 import Entities.Employee;
+
 import Utilities.ConnectionUtil;
-import Utilities.List;
+import java.util.List;
 import exceptions.ResourceNotFound;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+
 
 public class EmployeeDAOImpl implements EmployeeDAO {
 
@@ -64,7 +66,21 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     @Override
     public List<Employee> getAllEmployees() {
         try{
-            return null;
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "select * from employee";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            ArrayList allEmployees = new ArrayList();
+            while(rs.next()){
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("employee_id"));
+                employee.setFirstName(rs.getString("first_name"));
+                employee.setLastName(rs.getString("last_name"));
+                allEmployees.add(employee);
+            }
+
+            return allEmployees;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

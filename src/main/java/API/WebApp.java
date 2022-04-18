@@ -17,7 +17,7 @@ public class WebApp {
     public static void main(String[] args) {
         Javalin app = Javalin.create();
         //Create
-        app.post("/createEmployee", context -> {
+        app.post("/employees", context -> {
             String emp = context.body();
             //String EMP is the message we post from Postman
             Employee employee = gson.fromJson(emp, Employee.class);
@@ -31,7 +31,7 @@ public class WebApp {
         });
 
         //Read
-        app.get("/findEmployee/{id}", context -> {
+        app.get("/employees/{id}", context -> {
             //id is equal to whatever number is put in the {id} search (i.e /findemployee/3 means id = 3
             int id = Integer.parseInt(context.pathParam("id"));
 
@@ -41,6 +41,17 @@ public class WebApp {
             } catch (ResourceNotFound e) {
                 context.status(404);
                 context.result("No employee could be found with id of " + id);
+            }
+
+        });
+        app.get("/employees", context -> {
+            try{
+
+                String json = gson.toJson(employeeService.searchAllEmployees());
+                context.result(json);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.status(404);
             }
 
         });
