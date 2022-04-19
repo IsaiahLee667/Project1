@@ -25,4 +25,15 @@ public class EmployeeServiceImplemented implements EmployeeService{
     public List<Employee> searchAllEmployees() {
         return this.employeeDAO.getAllEmployees();
     }
+
+    @Override
+    public Employee updateEmployee(Employee employee) {
+        return this.employeeDAO.updateEmployee(employee);
+    }
+
+    @Override
+    public Boolean removeEmployeeById(int id) {
+        boolean result = this.employeeDAO.deleteEmployeeById(id);
+        return result;
+    }
 }

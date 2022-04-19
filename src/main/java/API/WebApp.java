@@ -55,6 +55,29 @@ public class WebApp {
             }
 
         });
+        //Update
+        app.post("/employees/{id}", context -> {
+            int id = Integer.parseInt(context.pathParam("id"));
+            String body = context.body();
+            Employee employee = gson.fromJson(body, Employee.class);
+            employee.setId(id);
+            employeeService.updateEmployee(employee);
+            context.status(201);
+            context.result("Employee Updated");
+        });
+        //Delete
+        app.delete("/employees/{id}",context -> {
+            int id = Integer.parseInt(context.pathParam("id"));
+            boolean result = employeeService.removeEmployeeById(id);
+            if (result){
+                context.status(204);
+                context.result("Employee was deleted");
+            }
+            else{
+                context.status(500);
+                context.result("No one found with that id to delete");
+            }
+        });
 
 
         app.start(8080);

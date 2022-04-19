@@ -90,7 +90,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     @Override
     public Employee updateEmployee(Employee employee) {
         try{
-            return null;
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "update employee set first_name = ?, last_name = ? where employee_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1,employee.getFirstName());
+            ps.setString(2,employee.getLastName());
+            ps.setInt(3,employee.getId());
+            ps.executeUpdate();
+            return employee;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -100,10 +107,15 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     @Override
     public Boolean deleteEmployeeById(int id) {
         try{
-            return null;
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "delete from employee where employee_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            return  true;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return false;
         }
     }
 }
