@@ -37,6 +37,7 @@ public class WebApp {
 
             try{
                 String jsonEmployee = gson.toJson(employeeService.searchEmployeeByID(id));
+                context.status(200);
                 context.result(jsonEmployee);
             } catch (ResourceNotFound e) {
                 context.status(404);
@@ -56,27 +57,49 @@ public class WebApp {
 
         });
         //Update
-        app.post("/employees/{id}", context -> {
+        app.put("/employees/{id}", context -> {
             int id = Integer.parseInt(context.pathParam("id"));
-            String body = context.body();
-            Employee employee = gson.fromJson(body, Employee.class);
-            employee.setId(id);
-            employeeService.updateEmployee(employee);
-            context.status(201);
-            context.result("Employee Updated");
+            try{
+
+                String body = context.body();
+                Employee employee = gson.fromJson(body, Employee.class);
+                //Turn the body from the postman app into a String and use it to create an employee
+
+
+                employee.setId(id);
+                //Set the id of the created employee to the id num from {id}
+                employeeService.updateEmployee(employee);
+                //update the employee with the new information
+                context.status(201);
+                context.result("Employee Updated");
+            } catch (ResourceNotFound e) {
+                context.status(404);
+                context.result("No employee was found with that id to update");
+            }
+
         });
         //Delete
         app.delete("/employees/{id}",context -> {
+
             int id = Integer.parseInt(context.pathParam("id"));
-            boolean result = employeeService.removeEmployeeById(id);
-            if (result){
-                context.status(204);
-                context.result("Employee was deleted");
+
+            try{
+                employeeService.searchEmployeeByID(id);
+                boolean result = employeeService.removeEmployeeById(id);
+                if (result){
+                    context.status(204);
+                    //context.result("Employee was deleted");
+                }
+                else{
+                    context.status(500);
+                    context.result("Something has gone wrong, please try again");
+                }
+            } catch (ResourceNotFound e) {
+                context.status(404);
+                context.result("No employee was found with that id to delete");
             }
-            else{
-                context.status(500);
-                context.result("No one found with that id to delete");
-            }
+
+
         });
 
 

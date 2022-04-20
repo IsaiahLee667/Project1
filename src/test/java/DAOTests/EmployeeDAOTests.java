@@ -34,4 +34,13 @@ public class EmployeeDAOTests {
         System.out.println(numEmployees);
         Assertions.assertTrue(numEmployees > 2);
     }
+    @Test
+    void updateEmployeeById(){
+        Employee foundEmployee = employeeDAO.getEmployeeById(3);
+        foundEmployee.setFirstName("Miranda");
+        employeeDAO.updateEmployee(foundEmployee);
+        Employee updatedEmployee = employeeDAO.getEmployeeById(foundEmployee.getId());
+        employeeDAO.updateEmployee(foundEmployee);
+        Assertions.assertEquals("Miranda", updatedEmployee.getFirstName());
+    }
 }

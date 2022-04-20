@@ -3,13 +3,11 @@ package DataLayer;
 import Entities.Employee;
 
 import Utilities.ConnectionUtil;
+
+import java.sql.*;
 import java.util.List;
 import exceptions.ResourceNotFound;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 
@@ -47,17 +45,23 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
             ResultSet rs = ps.executeQuery();
             //If nothing is returned
-           /* if(rs.getFetchSize() == 0){
+            //THIS CAUSES PROBLEMS IF MULTIPLE EMPLOYEES CAN BE FOUND UNDER THE SAME ID BUT FOR NOW THIS WORKS
+            if(rs.next() == false){
                 //Throw Error: Nothing was found
                 throw new ResourceNotFound(id);
-            }*/
-            rs.next();
-            Employee employee = new Employee();
-            employee.setId(rs.getInt("employee_id"));
-            employee.setFirstName(rs.getString("first_name"));
-            employee.setLastName(rs.getString("last_name"));
-            return employee;
-        } catch (Exception e) {
+            }
+            else{
+                do{
+                    Employee employee = new Employee();
+                    employee.setId(rs.getInt("employee_id"));
+                    employee.setFirstName(rs.getString("first_name"));
+                    employee.setLastName(rs.getString("last_name"));
+                    return employee;
+                }while(rs.next());
+            }
+
+
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -96,9 +100,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             ps.setString(1,employee.getFirstName());
             ps.setString(2,employee.getLastName());
             ps.setInt(3,employee.getId());
-            ps.executeUpdate();
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated == 0){
+                throw new ResourceNotFound(employee.getId());
+            }
             return employee;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -113,7 +120,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             ps.setInt(1, id);
             ps.execute();
             return  true;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
