@@ -1,15 +1,20 @@
 package API;
 
 import DataLayer.EmployeeDAOImpl;
+import DataLayer.ExpenseDAOImpl;
 import Entities.Employee;
+import Entities.Expense;
 import Services.EmployeeService;
 import Services.EmployeeServiceImplemented;
+import Services.ExpenseService;
+import Services.ExpenseServiceImpl;
 import com.google.gson.Gson;
 import exceptions.ResourceNotFound;
 import io.javalin.Javalin;
 
 public class WebApp {
     public static EmployeeService employeeService = new EmployeeServiceImplemented(new EmployeeDAOImpl());
+    public static ExpenseService expenseService = new ExpenseServiceImpl(new ExpenseDAOImpl());
 
     //Create a global Gson device that all WebApp methods use instead of locally creating it in each method
     public static Gson gson = new Gson();
@@ -99,6 +104,38 @@ public class WebApp {
                 context.result("No employee was found with that id to delete");
             }
 
+
+        });
+////EXPENSE FUNCTIONS START HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        //Create
+        app.post("/expenses", context -> {
+            String emp = context.body();
+            //String EMP is the message we post from Postman
+            Expense expense = gson.fromJson(emp, Expense.class);
+            expense.setPurchaseDate(System.currentTimeMillis());
+            //Create an Expense using our Expense entity as a template
+            //Set the date value to current time in milliseconds
+            expenseService.chargeExpense(expense);
+            //Create an employee in our Employee Services from this created employee
+            context.status(201);
+            String expenseToJson = gson.toJson(expense);
+            //Return the result back to Postman (nothing should change except for the ID which goes from 0 to its serial value)
+            context.result(expenseToJson);
+        });
+
+        //Read
+        app.get("/expenses/{id}", context -> {
+            int id = Integer.parseInt(context.pathParam("id"));
+
+            try{
+                    String jsonExpense = gson.toJson(expenseService.searchExpenseById(id));
+                    context.status(200);
+                    context.result(jsonExpense);}
+            catch (ResourceNotFound e) {
+                    context.status(404);
+                    context.result("No expense could be found with id of " + id);
+                }
 
         });
 

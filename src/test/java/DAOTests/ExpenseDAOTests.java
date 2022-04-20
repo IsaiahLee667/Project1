@@ -6,6 +6,8 @@ import Entities.Expense;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.text.SimpleDateFormat;
+
 public class ExpenseDAOTests {
     static ExpenseDAO expenseDAO = new ExpenseDAOImpl();
 
@@ -18,5 +20,12 @@ public class ExpenseDAOTests {
         Assertions.assertNotEquals(0,checkCreatedExpense.getId());
 
 
+    }
+    @Test
+    void findExpenseByIdTest(){
+        Expense searchedExpense = expenseDAO.getExpenseById(2);
+        SimpleDateFormat sdf = new SimpleDateFormat ("MMM dd,yyy HH:mm");
+        System.out.println(sdf.format(searchedExpense.getPurchaseDate()));
+        Assertions.assertEquals(5000, searchedExpense.getAmount());
     }
 }

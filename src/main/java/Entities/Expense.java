@@ -15,9 +15,8 @@ public class Expense {
     private String status;
     private long purchaseDate;
     private int employeeId;
-    @Getter(value= AccessLevel.NONE)
-    @Setter(value=AccessLevel.NONE)
-    private SimpleDateFormat sdf;
+
+    //amoprivate SimpleDateFormat sdf;
 
     public Expense() {
     }

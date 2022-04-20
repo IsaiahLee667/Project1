@@ -28,6 +28,9 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }catch(NullPointerException e){
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -40,7 +43,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next() == false){
+            if(!rs.next()){
                 //Throw Error: Nothing was found
                 throw new ResourceNotFound(id);
             }
@@ -51,7 +54,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
                     expense.setAmount(rs.getDouble("expense_amount"));
                     expense.setStatus(rs.getString("status"));
                     expense.setPurchaseDate(rs.getLong("date_of_purchase"));
-                    expense.setEmployeeId(rs.getInt("emp_id"));
+                    expense.setEmployeeId(rs.getInt("empid"));
                     return expense;
                 }while(rs.next());
             }
@@ -59,7 +62,11 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }catch(NullPointerException e){
+            e.printStackTrace();
+            return null;
         }
+
 
     }
 
