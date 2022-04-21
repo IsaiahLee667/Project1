@@ -12,6 +12,8 @@ public interface ExpenseDAO {
     Expense getExpenseById(int id);
 
     List<Expense> getExpensesByEmployeeId(int id);
+
+    List<Expense> getExpenseByStatus(String status);
     //Update
     Employee updateExpense(Expense expense);
     //Delete

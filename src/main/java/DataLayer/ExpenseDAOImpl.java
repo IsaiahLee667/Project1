@@ -6,6 +6,7 @@ import Utilities.ConnectionUtil;
 import exceptions.ResourceNotFound;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseDAOImpl implements ExpenseDAO{
@@ -26,7 +27,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
             expense.setId(generatedId);
             return expense;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e + "Sql Error");
             return null;
         }catch(NullPointerException e){
             e.printStackTrace();
@@ -60,7 +61,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e + "Sql Error");
             return null;
         }catch(NullPointerException e){
             e.printStackTrace();
@@ -72,7 +73,66 @@ public class ExpenseDAOImpl implements ExpenseDAO{
 
     @Override
     public List<Expense> getExpensesByEmployeeId(int id) {
-        return null;
+        try{
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "select * from expense where empid = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
+
+            ArrayList<Expense> allExpenses = new ArrayList<>();
+            if (!rs.next()){
+                throw new ResourceNotFound(id);
+            }
+            else{
+                do{
+                    Expense expense = new Expense();
+                    expense.setId(rs.getInt("expense_id"));
+                    expense.setAmount(rs.getDouble("expense_amount"));
+                    expense.setStatus(rs.getString("status"));
+                    expense.setPurchaseDate(rs.getLong("date_of_purchase"));
+                    expense.setEmployeeId(rs.getInt("empid"));
+                    allExpenses.add(expense);
+                }while(rs.next());
+            }
+
+            return allExpenses;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Expense> getExpenseByStatus(String status) {
+        try{
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "select * from expense where status = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1,status);
+            ResultSet rs = ps.executeQuery();
+
+            ArrayList<Expense> allExpenses = new ArrayList<>();
+            if (!rs.next()){
+                throw new ResourceNotFound(status);
+            }
+            else{
+                do{
+                    Expense expense = new Expense();
+                    expense.setId(rs.getInt("expense_id"));
+                    expense.setAmount(rs.getDouble("expense_amount"));
+                    expense.setStatus(rs.getString("status"));
+                    expense.setPurchaseDate(rs.getLong("date_of_purchase"));
+                    expense.setEmployeeId(rs.getInt("empid"));
+                    allExpenses.add(expense);
+                }while(rs.next());
+            }
+
+            return allExpenses;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -88,11 +148,17 @@ public class ExpenseDAOImpl implements ExpenseDAO{
     @Override
     public Boolean deleteExpenseById(int id) {
         try{
-            return null;
-        } catch (Exception e) {
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "delete from expense where expense_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return false;
         }
-
     }
+
 }
+

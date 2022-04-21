@@ -65,7 +65,6 @@ public class WebApp {
         app.put("/employees/{id}", context -> {
             int id = Integer.parseInt(context.pathParam("id"));
             try{
-
                 String body = context.body();
                 Employee employee = gson.fromJson(body, Employee.class);
                 //Turn the body from the postman app into a String and use it to create an employee
@@ -125,17 +124,76 @@ public class WebApp {
         });
 
         //Read
+        //Get expense by EXPENSE ID (i.e get one expense)
         app.get("/expenses/{id}", context -> {
             int id = Integer.parseInt(context.pathParam("id"));
-
             try{
                     String jsonExpense = gson.toJson(expenseService.searchExpenseById(id));
                     context.status(200);
                     context.result(jsonExpense);}
             catch (ResourceNotFound e) {
                     context.status(404);
-                    context.result("No expense could be found with id of " + id);
+                    context.result("No expense could be found with an id of " + id);
                 }
+
+        });
+        //Get All Expenses under 1 employee ID
+        app.get("/employees/{id}/expenses", context -> {
+            int id = Integer.parseInt(context.pathParam("id"));
+
+            try{
+                String JsonAllEmpExpenses = gson.toJson(expenseService.findExpensesByAnEmployee(id));
+                context.status(201);
+                context.result(JsonAllEmpExpenses);
+            } catch (ResourceNotFound e) {
+                context.status(404);
+                context.result("No expense could be found for the employee with an id of " + id);
+            }
+
+        });
+
+        app.get("/expenses?status={searchStatus}",context -> {
+            String status = context.pathParam("searchStatus");
+            System.out.println("test");
+            try{
+                String jsonAllExpensesByStatus = gson.toJson(expenseService.findExpensesByStatus(status));
+                context.status(201);
+                context.result(jsonAllExpensesByStatus);
+            } catch (ResourceNotFound e) {
+
+                context.status(404);
+                context.result(status);
+
+            }
+
+        });
+        //Update
+
+
+
+
+
+        //Delete
+        app.delete("/expenses/{id}",context -> {
+
+            int id = Integer.parseInt(context.pathParam("id"));
+
+            try{
+                expenseService.searchExpenseById(id);
+                boolean result = expenseService.removeExpenseById(id);
+                if (result){
+                    context.status(204);
+                    //context.result("Employee was deleted");
+                }
+                else{
+                    context.status(500);
+                    context.result("Something has gone wrong, please try again");
+                }
+            } catch (ResourceNotFound e) {
+                context.status(404);
+                context.result("No employee was found with that id to delete");
+            }
+
 
         });
 
