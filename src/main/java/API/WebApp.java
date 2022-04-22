@@ -12,6 +12,8 @@ import com.google.gson.Gson;
 import exceptions.ResourceNotFound;
 import io.javalin.Javalin;
 
+import java.util.List;
+
 public class WebApp {
     public static EmployeeService employeeService = new EmployeeServiceImplemented(new EmployeeDAOImpl());
     public static ExpenseService expenseService = new ExpenseServiceImpl(new ExpenseDAOImpl());
@@ -152,23 +154,61 @@ public class WebApp {
 
         });
 
-        app.get("/expenses?status={searchStatus}",context -> {
-            String status = context.pathParam("searchStatus");
-            System.out.println("test");
-            try{
-                String jsonAllExpensesByStatus = gson.toJson(expenseService.findExpensesByStatus(status));
-                context.status(201);
-                context.result(jsonAllExpensesByStatus);
-            } catch (ResourceNotFound e) {
-
-                context.status(404);
-                context.result(status);
-
+        app.get("/expenses",context -> {
+            //int id = Integer.parseInt(context.pathParam("id"));
+            String searchStatus = context.queryParam("status");
+            if (searchStatus == null){
+                List<Expense> expenses = expenseService.showAllExpenses();
+                String jsonAllExpenses = gson.toJson(expenses);
+                context.result(jsonAllExpenses);
+                context.status(202);
             }
+            else{
+                try{
+                    String jsonAllExpensesByStatus = gson.toJson(expenseService.findExpensesByStatus(searchStatus));
+                    context.status(201);
+                    context.result(jsonAllExpensesByStatus);
+                } catch (ResourceNotFound e) {
+
+                    context.status(404);
+                    context.result(searchStatus);
+
+                }
+            }
+
 
         });
         //Update
+        app.put("/expenses{id}", context -> {
+            int id = Integer.parseInt(context.pathParam("id"));
+            try{
+                String body = context.body();
 
+                //Expense timeexpense = expenseService.searchExpenseById(id);
+
+
+
+                Expense expense = gson.fromJson(body, Expense.class);
+                System.out.println(expense);
+
+               // expense.setPurchaseDate(timeexpense.getPurchaseDate());
+
+
+                //expense.setId(id);
+
+                expenseService.reviseExpense(expense);
+                //update the employee with the new information
+                context.status(201);
+                context.result("Expense Updated");
+            } catch (ResourceNotFound e) {
+                context.status(404);
+                context.result("No employee was found with that id to update");
+            }catch (IllegalAccessException e){
+                context.status(400);
+                context.result("You cannot edit a transaction that is already Approved or Denied");
+            }
+
+        });
 
 
 

@@ -45,4 +45,9 @@ public class ExpenseDAOTests {
 
         Assertions.assertNotEquals(0,expenseByStatus);
     }
+    @Test
+    void grabAllExpensesTest(){
+        List<Expense> allExpenses = expenseDAO.getAllExpenses();
+        System.out.println(allExpenses);
+    }
 }

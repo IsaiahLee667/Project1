@@ -31,7 +31,7 @@ public class EmployeeDAOTests {
     void getAllEmployees(){
         List<Employee> allEmployees = employeeDAO.getAllEmployees();
         int numEmployees = allEmployees.size();
-        System.out.println(numEmployees);
+        System.out.println(allEmployees);
         Assertions.assertTrue(numEmployees > 2);
     }
     @Test

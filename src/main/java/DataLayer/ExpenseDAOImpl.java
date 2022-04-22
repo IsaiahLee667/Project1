@@ -72,6 +72,34 @@ public class ExpenseDAOImpl implements ExpenseDAO{
     }
 
     @Override
+    public List<Expense> getAllExpenses() {
+        try{
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "select * from expense";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            ArrayList<Expense> allExpenses = new ArrayList<>();
+            while(rs.next()){
+                Expense expense = new Expense();
+                expense.setId(rs.getInt("expense_id"));
+                expense.setAmount(rs.getDouble("expense_amount"));
+                expense.setStatus(rs.getString("status"));
+                expense.setPurchaseDate(rs.getLong("date_of_purchase"));
+                expense.setEmployeeId(rs.getInt("empid"));
+                allExpenses.add(expense);
+
+            }
+            return allExpenses;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+
+
+
+    }
+
+    @Override
     public List<Expense> getExpensesByEmployeeId(int id) {
         try{
             Connection conn = ConnectionUtil.createConnection();
@@ -136,9 +164,21 @@ public class ExpenseDAOImpl implements ExpenseDAO{
     }
 
     @Override
-    public Employee updateExpense(Expense expense) {
+    public Expense updateExpense(Expense expense) {
         try{
-            return null;
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "update expense set expense_amount = ?, status = ?, date_of_purchase = ?, empid = ? where expense_id = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setDouble(1,expense.getAmount());
+            ps.setString(2, expense.getStatus());
+            ps.setLong(3, expense.getPurchaseDate());
+            ps.setInt(4,expense.getEmployeeId());
+            ps.setInt(5, expense.getId());
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated == 0){
+                throw new ResourceNotFound(expense.getId());
+            }
+            return expense;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
