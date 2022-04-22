@@ -36,8 +36,8 @@ public class ExpenseServiceImpl implements  ExpenseService{
 
     @Override
     public Expense reviseExpense(Expense expense) throws IllegalAccessException {
-        if (expense.getStatus() == "Approved" || expense.getStatus() == "Denied"){
-            throw new IllegalAccessException("You cannot edit a transaction that is already Approved or Denied");
+        if (expense.getStatus().equals("Approved" )  || expense.getStatus().equals("Denied")){
+            throw new IllegalAccessException("You cannot edit a transaction status to Approved or Denied");
         }
         return this.expenseDAO.updateExpense(expense);
     }

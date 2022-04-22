@@ -50,4 +50,12 @@ public class ExpenseDAOTests {
         List<Expense> allExpenses = expenseDAO.getAllExpenses();
         System.out.println(allExpenses);
     }
+    @Test
+    void updateExpenseTest(){
+        Expense findExpense = expenseDAO.getExpenseById(4);
+        findExpense.setAmount(35000);
+        expenseDAO.updateExpense(findExpense);
+        Expense updatedExpense = expenseDAO.getExpenseById(4);
+        Assertions.assertEquals(35000,updatedExpense.getAmount());
+    }
 }

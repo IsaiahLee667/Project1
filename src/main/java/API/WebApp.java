@@ -179,36 +179,33 @@ public class WebApp {
 
         });
         //Update
-        app.put("/expenses{id}", context -> {
+        app.put("/expenses/{id}", context -> {
             int id = Integer.parseInt(context.pathParam("id"));
             try{
                 String body = context.body();
-
                 //Expense timeexpense = expenseService.searchExpenseById(id);
-
-
-
                 Expense expense = gson.fromJson(body, Expense.class);
-                System.out.println(expense);
-
                // expense.setPurchaseDate(timeexpense.getPurchaseDate());
-
-
-                //expense.setId(id);
-
+                expense.setId(id);
+                expense.setPurchaseDate(System.currentTimeMillis());
                 expenseService.reviseExpense(expense);
-                //update the employee with the new information
                 context.status(201);
                 context.result("Expense Updated");
             } catch (ResourceNotFound e) {
-                context.status(404);
+                context.status(401);
                 context.result("No employee was found with that id to update");
             }catch (IllegalAccessException e){
                 context.status(400);
-                context.result("You cannot edit a transaction that is already Approved or Denied");
+                context.result("You cannot edit a transaction status to Approved or Denied");
             }
 
+
         });
+
+        /*app.patch("/expenses/{id}/{status}", context -> {
+            String status = context.pathParam("status");
+        });*/
+
 
 
 

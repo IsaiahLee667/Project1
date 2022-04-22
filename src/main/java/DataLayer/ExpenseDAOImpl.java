@@ -15,6 +15,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "insert into expense values (default, ?, ?,?,?)";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setDouble(1, expense.getAmount());
             ps.setString(2, expense.getStatus());
@@ -40,6 +41,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "select * from expense where expense_id = ?";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
@@ -76,6 +78,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "select * from expense";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             ArrayList<Expense> allExpenses = new ArrayList<>();
@@ -104,6 +107,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "select * from expense where empid = ?";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
@@ -168,6 +172,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "update expense set expense_amount = ?, status = ?, date_of_purchase = ?, empid = ? where expense_id = ?";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setDouble(1,expense.getAmount());
             ps.setString(2, expense.getStatus());
@@ -179,7 +184,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
                 throw new ResourceNotFound(expense.getId());
             }
             return expense;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -190,6 +195,7 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "delete from expense where expense_id = ?";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ps.execute();
