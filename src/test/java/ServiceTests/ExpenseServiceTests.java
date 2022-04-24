@@ -14,4 +14,8 @@ public class ExpenseServiceTests {
     void updateWhereForbiddenStatusTest(){
 
     }
+    @Test
+    void updateStatustoApproveorDeny(){
+
+    }
 }

@@ -186,6 +186,10 @@ public class WebApp {
                 //Expense timeexpense = expenseService.searchExpenseById(id);
                 Expense expense = gson.fromJson(body, Expense.class);
                // expense.setPurchaseDate(timeexpense.getPurchaseDate());
+                if (expense.getId() != id){
+                    throw new IllegalArgumentException();
+                }
+
                 expense.setId(id);
                 expense.setPurchaseDate(System.currentTimeMillis());
                 expenseService.reviseExpense(expense);
@@ -198,13 +202,44 @@ public class WebApp {
                 context.status(400);
                 context.result("You cannot edit a transaction status to Approved or Denied");
             }
+            catch (IllegalArgumentException e){
+                context.status(401);
+                context.result("Id in the Path Param and Id in the JSON body must be the same");
+            }
 
 
         });
 
-        /*app.patch("/expenses/{id}/{status}", context -> {
+        app.patch("/expenses/{id}/{status}", context -> {
             String status = context.pathParam("status");
-        });*/
+            int id = Integer.parseInt(context.pathParam("id"));
+
+
+
+            try{
+
+                if (status.equalsIgnoreCase("Approve")) status = "Approved";
+                else if (status.equalsIgnoreCase("Deny")) status = "Denied";
+                else throw new IllegalArgumentException("Status must either be Approve or Deny");
+
+                Expense newExpense = expenseService.reviseExpenseStatus(id,status);
+                String changedExpense = gson.toJson(newExpense);
+
+                context.status(201);
+                context.result(changedExpense);
+            } catch (IllegalArgumentException e) {
+                context.status(401);
+                context.result(String.valueOf(e));
+            }catch (ResourceNotFound e){
+                context.status(404);
+            }catch (IllegalAccessException e){
+                context.status(401);
+                context.result("Status is already Approved or Denied, and cannot be changed");
+            }
+
+
+
+        });
 
 
 

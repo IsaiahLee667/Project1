@@ -18,7 +18,8 @@ public class ExpenseDAOImpl implements ExpenseDAO{
             assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setDouble(1, expense.getAmount());
-            ps.setString(2, expense.getStatus());
+            //Always create the expense as Pending, this is a terrible hard code but avoids the "let me already create this approved", ideally this is an if check
+            ps.setString(2, "Pending");
             ps.setLong(3, expense.getPurchaseDate());
             ps.setInt(4, expense.getEmployeeId());
             ps.execute();

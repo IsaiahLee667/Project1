@@ -19,6 +19,8 @@ public interface ExpenseService {
     //update
     Expense reviseExpense (Expense expense) throws IllegalAccessException;
 
+    Expense reviseExpenseStatus(int expenseId, String status) throws IllegalAccessException;
+
     //Delete
     Boolean removeExpenseById(int id);
 }
