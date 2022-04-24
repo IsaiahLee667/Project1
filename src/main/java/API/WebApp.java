@@ -113,16 +113,26 @@ public class WebApp {
         app.post("/expenses", context -> {
             String emp = context.body();
             //String EMP is the message we post from Postman
-            Expense expense = gson.fromJson(emp, Expense.class);
-            expense.setPurchaseDate(System.currentTimeMillis());
-            //Create an Expense using our Expense entity as a template
-            //Set the date value to current time in milliseconds
-            expenseService.chargeExpense(expense);
-            //Create an employee in our Employee Services from this created employee
-            context.status(201);
-            String expenseToJson = gson.toJson(expense);
-            //Return the result back to Postman (nothing should change except for the ID which goes from 0 to its serial value)
-            context.result(expenseToJson);
+            try{
+                Expense expense = gson.fromJson(emp, Expense.class);
+                if (expense.getAmount() < 0){
+                    throw new ArithmeticException();
+                }
+
+                expense.setPurchaseDate(System.currentTimeMillis());
+                //Create an Expense using our Expense entity as a template
+                //Set the date value to current time in milliseconds
+                expenseService.chargeExpense(expense);
+                //Create an employee in our Employee Services from this created employee
+                context.status(201);
+                String expenseToJson = gson.toJson(expense);
+                //Return the result back to Postman (nothing should change except for the ID which goes from 0 to its serial value)
+                context.result(expenseToJson);
+            } catch (ArithmeticException e) {
+                context.status(401);
+                context.result("Amount must be greater than 0");
+            }
+
         });
 
         //Read
