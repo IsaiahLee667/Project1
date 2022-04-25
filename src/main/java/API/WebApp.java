@@ -163,7 +163,7 @@ public class WebApp {
             }
 
         });
-
+        //Get all Expenses AND Get all Expenses by Status
         app.get("/expenses",context -> {
             //int id = Integer.parseInt(context.pathParam("id"));
             String searchStatus = context.queryParam("status");

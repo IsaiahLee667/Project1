@@ -20,4 +20,6 @@ public interface ExpenseDAO {
     Expense updateExpense(Expense expense);
     //Delete
     Boolean deleteExpenseById(int id);
+
+    Boolean deleteExpenseByEmployeeId(int id);
 }

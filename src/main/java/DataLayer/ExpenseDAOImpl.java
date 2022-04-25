@@ -207,5 +207,22 @@ public class ExpenseDAOImpl implements ExpenseDAO{
         }
     }
 
+    @Override
+    public Boolean deleteExpenseByEmployeeId(int id) {
+        try{
+            Connection conn = ConnectionUtil.createConnection();
+            String sql = "delete from expense where empid = ?";
+            assert conn != null;
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
+
+
 
