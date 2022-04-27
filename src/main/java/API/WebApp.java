@@ -115,7 +115,7 @@ public class WebApp {
             //String EMP is the message we post from Postman
             try{
                 Expense expense = gson.fromJson(emp, Expense.class);
-                if (expense.getAmount() < 0){
+                if (expense.getAmount() <= 0){
                     throw new ArithmeticException();
                 }
 
@@ -133,7 +133,32 @@ public class WebApp {
                 context.result("Amount must be greater than 0");
             }
 
+            //Add Expense to Exployee with given Id
+
+
         });
+
+        app.post("/employees/{id}/expenses", context -> {
+            int id = Integer.parseInt(context.pathParam("id"));
+            if (id == 0){
+                throw new ResourceNotFound(id);
+            }
+            try{
+                employeeService.searchEmployeeByID(id);
+                String expenseToAdd = context.body();
+                Expense expense = gson.fromJson(expenseToAdd, Expense.class);
+                expense.setEmployeeId(id);
+                expenseService.chargeExpense(expense);
+                context.status(201);
+                context.result("Expense was added to employee with id " + id);
+            } catch (ResourceNotFound e) {
+                context.status(404);
+                context.result("No employee could be found with that id to delete");
+            }
+
+
+        });
+
 
         //Read
         //Get expense by EXPENSE ID (i.e get one expense)
@@ -206,14 +231,14 @@ public class WebApp {
                 context.status(201);
                 context.result("Expense Updated");
             } catch (ResourceNotFound e) {
-                context.status(401);
+                context.status(404);
                 context.result("No employee was found with that id to update");
             }catch (IllegalAccessException e){
-                context.status(400);
+                context.status(403);
                 context.result("You cannot edit a transaction status to Approved or Denied");
             }
             catch (IllegalArgumentException e){
-                context.status(401);
+                context.status(403);
                 context.result("Id in the Path Param and Id in the JSON body must be the same");
             }
 
@@ -223,8 +248,6 @@ public class WebApp {
         app.patch("/expenses/{id}/{status}", context -> {
             String status = context.pathParam("status");
             int id = Integer.parseInt(context.pathParam("id"));
-
-
 
             try{
 
@@ -238,12 +261,12 @@ public class WebApp {
                 context.status(201);
                 context.result(changedExpense);
             } catch (IllegalArgumentException e) {
-                context.status(401);
+                context.status(404);
                 context.result(String.valueOf(e));
             }catch (ResourceNotFound e){
                 context.status(404);
             }catch (IllegalAccessException e){
-                context.status(401);
+                context.status(404);
                 context.result("Status is already Approved or Denied, and cannot be changed");
             }
 
