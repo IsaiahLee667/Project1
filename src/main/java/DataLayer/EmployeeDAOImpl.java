@@ -19,6 +19,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "insert into employee values (default, ?, ?)";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, employee.getFirstName());
             ps.setString(2, employee.getLastName());
@@ -40,6 +41,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "select * from employee where employee_id = ?";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1,id);
 
@@ -72,6 +74,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "select * from employee";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
@@ -96,6 +99,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "update employee set first_name = ?, last_name = ? where employee_id = ?";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1,employee.getFirstName());
             ps.setString(2,employee.getLastName());
@@ -116,6 +120,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         try{
             Connection conn = ConnectionUtil.createConnection();
             String sql = "delete from employee where employee_id = ?";
+            assert conn != null;
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ps.execute();
