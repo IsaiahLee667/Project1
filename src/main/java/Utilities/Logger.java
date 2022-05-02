@@ -14,13 +14,8 @@ public class Logger {
         // LOG LEVEL + message + TimeStamp
         String logMessage = level.name() +" " +  message + " " + new Date() + "\n";
 
-        try {
-            Files.write(Paths.get("C:\\Users\\AdamRanieri\\Desktop\\PleastViewLibrary\\applogs.log"),
-                    logMessage.getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(logMessage);
+
 
     }
 

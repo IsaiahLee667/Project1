@@ -23,6 +23,15 @@ public class WebApp {
 
     public static void main(String[] args) {
         Javalin app = Javalin.create();
+        //Blankslate
+        app.get("/", context -> {
+
+            context.result("Default message from a blank page");
+        });
+
+
+
+
         //Create
         app.post("/employees", context -> {
             String emp = context.body();
@@ -302,7 +311,7 @@ public class WebApp {
 
         });
 
-
+        //app.start(5000);
         app.start(8080);
     }
 }
