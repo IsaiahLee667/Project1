@@ -99,6 +99,15 @@ public class WebApp {
             int id = Integer.parseInt(context.pathParam("id"));
 
             try{
+                List<Expense> expenses = expenseService.findExpensesByAnEmployee(id);
+                if (expenses.isEmpty() != true){
+                    throw new IllegalAccessException();
+
+                }
+
+
+
+
                 employeeService.searchEmployeeByID(id);
                 boolean result = employeeService.removeEmployeeById(id);
                 if (result){
@@ -112,6 +121,9 @@ public class WebApp {
             } catch (ResourceNotFound e) {
                 context.status(404);
                 context.result("No employee was found with that id to delete");
+            }catch(IllegalAccessException e){
+                context.status(400);
+                context.result("There are existing expenses for that employee, cannot delete this employee");
             }
 
 
@@ -159,7 +171,7 @@ public class WebApp {
                 expense.setEmployeeId(id);
                 expenseService.chargeExpense(expense);
                 context.status(201);
-                context.result("Expense was added to employee with id " + id);
+                context.result("Expense was added to employee with id of " + id);
             } catch (ResourceNotFound e) {
                 context.status(404);
                 context.result("No employee could be found with that id to delete");
@@ -297,7 +309,7 @@ public class WebApp {
                 boolean result = expenseService.removeExpenseById(id);
                 if (result){
                     context.status(204);
-                    //context.result("Employee was deleted");
+                    context.result("Employee was deleted");
                 }
                 else{
                     context.status(500);
@@ -311,7 +323,7 @@ public class WebApp {
 
         });
 
-        //app.start(5000);
-        app.start(8080);
+        app.start(5000);
+        //app.start(8080);
     }
 }
