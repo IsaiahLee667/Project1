@@ -227,7 +227,7 @@ public class WebApp {
                 } catch (ResourceNotFound e) {
 
                     context.status(404);
-                    context.result(searchStatus);
+                    context.result("No status of " + searchStatus + " exists");
 
                 }
             }
